@@ -1,19 +1,20 @@
 package fr.virtualmagpie.soleilnoir.service;
 
+import fr.virtualmagpie.soleilnoir.config.StatConfig;
 import fr.virtualmagpie.soleilnoir.model.Deck;
 import fr.virtualmagpie.soleilnoir.model.card.Card;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
 import fr.virtualmagpie.soleilnoir.model.combinaison.CombinationStrategy;
 import fr.virtualmagpie.soleilnoir.model.stat.CardDrawStatistics;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class StatService {
-  public final Deck deck;
-  public final Random random;
+  private final Deck deck;
+  private final Random random;
 
   public StatService(Random random) {
     this.deck = new Deck();
@@ -35,14 +36,14 @@ public class StatService {
    * @return object containing success rate stat for each possibility
    */
   public CardDrawStatistics statsCardDraw(
-      int nbTry, int nbCardDrawnMin, int nbCardDrawnMax, Combination[] difficulties) {
+      int nbTry, int nbCardDrawnMin, int nbCardDrawnMax, List<Combination> difficulties) {
     if (nbCardDrawnMax < nbCardDrawnMin) {
       throw new IllegalArgumentException("Wrong range definition of card drawn");
     }
 
     CardDrawStatistics stats =
         new CardDrawStatistics(
-            Arrays.asList(difficulties),
+            difficulties,
             IntStream.rangeClosed(nbCardDrawnMin, nbCardDrawnMax)
                 .boxed()
                 .collect(Collectors.toList()));
@@ -54,6 +55,14 @@ public class StatService {
       }
     }
     return stats;
+  }
+
+  public CardDrawStatistics statsCardDraw(StatConfig statConfig) {
+    return statsCardDraw(
+        statConfig.getNbTry(),
+        statConfig.getNbCardMin(),
+        statConfig.getNbCardMax(),
+        statConfig.getDifficulties());
   }
 
   private float computeStatOfCardDraw(int nbTry, int nbCardDrawn, Combination difficulty) {

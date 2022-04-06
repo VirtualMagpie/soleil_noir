@@ -3,6 +3,8 @@ package fr.virtualmagpie.soleilnoir.model.card;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 @AllArgsConstructor
 public enum CardValue {
@@ -35,6 +37,16 @@ public enum CardValue {
     }
     throw new IllegalArgumentException(
         String.format("Value %s cannot be converted to card value", intValue));
+  }
+
+  public static CardValue fromString(String stringValue) {
+    for (CardValue cardValue : CardValue.values()) {
+      if (Objects.equals(stringValue, cardValue.getStringValue())) {
+        return cardValue;
+      }
+    }
+    throw new IllegalArgumentException(
+        String.format("Value %s cannot be converted to card value", stringValue));
   }
 
   public static class IntValue {
