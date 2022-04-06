@@ -4,6 +4,18 @@ import fr.virtualmagpie.soleilnoir.model.card.CardValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Represent a card combination, ie a difficulty value to overpass, or the strength of a draw. For
+ * instance, "one Ace" or "a pair of Ten" are combinations. In rpg "Soleil Noir", card combination
+ * are evaluated only on number of identical card (with same value), then on card value. Poker
+ * special combination are for instance not used here.
+ *
+ * <p>When comparing combination:
+ * <li>Combination with the higher amount of identical card is stronger
+ * <li>In case of draw, the combination with the higher card value is stronger
+ *
+ *     <p>For instance: 3 Queen > 2 Kings > 2 Two > 1 Ace > 1 King
+ */
 @Data
 @AllArgsConstructor
 public class Combination implements Comparable<Combination> {

@@ -1,5 +1,9 @@
 package fr.virtualmagpie.soleilnoir.model.card;
 
+/**
+ * This class create 54 cards for a classic playing card deck. Generated objects are saved, to
+ * prevent more call to constructor when requesting an already existing card.
+ */
 public class CardProvider {
   private static final Card[] cards;
 

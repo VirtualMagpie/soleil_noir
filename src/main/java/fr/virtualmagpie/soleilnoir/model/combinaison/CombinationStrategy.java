@@ -9,6 +9,18 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Given a set of cards, find the best combination possible. Choice of the best combination is based
+ * on order implemented in Combination class (ie the higher value among the higher quantity). We
+ * must also take into account Joker, which can become any card.
+ *
+ * <p>No further rule is applied in this basic strategy.
+ *
+ * <p>For instance:
+ * <li>With a hand of 1 Ace and 2 Five, the best combination is 2[5]
+ * <li>With a hand of 1 Two, 1 Queen and 1 Joker, the best combination is 2[Q]
+ * <li>With a hand of 2 Jokers, the best combination is 2[A]
+ */
 public class CombinationStrategy {
 
   public static Combination findBestCombination(Card[] cards) {
