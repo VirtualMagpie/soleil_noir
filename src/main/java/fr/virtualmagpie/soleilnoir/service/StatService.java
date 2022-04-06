@@ -4,8 +4,12 @@ import fr.virtualmagpie.soleilnoir.model.Deck;
 import fr.virtualmagpie.soleilnoir.model.card.Card;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
 import fr.virtualmagpie.soleilnoir.model.combinaison.CombinationStrategy;
+import fr.virtualmagpie.soleilnoir.model.stat.CardDrawStatistics;
 
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class StatService {
   public final Deck deck;
@@ -17,39 +21,42 @@ public class StatService {
     this.random = random;
   }
 
-  public float[][] rangeStatOfCardDrawAgainstMultipleDifficulty(
+  /**
+   * Compute statistics of card draw against given difficulties.
+   *
+   * @param nbTry - Nb of draw repetition pour each experience nbCard x difficulty. More repetitions
+   *     means a more precise result.
+   * @param nbCardDrawnMin - For definition of number of cards to draw. This is the min value of the
+   *     range of possible values. Must be strictly positive.
+   * @param nbCardDrawnMax - For definition of number of cards to draw. This is the max value of the
+   *     range of possible values. Must be more than or equal to min value in range.
+   * @param difficulties - Array of combinations, defining difficulties against which success rate
+   *     will be computed.
+   * @return object containing success rate stat for each possibility
+   */
+  public CardDrawStatistics statsCardDraw(
       int nbTry, int nbCardDrawnMin, int nbCardDrawnMax, Combination[] difficulties) {
     if (nbCardDrawnMax < nbCardDrawnMin) {
       throw new IllegalArgumentException("Wrong range definition of card drawn");
     }
-    float[][] stats = new float[difficulties.length][nbCardDrawnMax - nbCardDrawnMin + 1];
-    for (int i = 0; i < difficulties.length; i++) {
-      Combination difficulty = difficulties[i];
-      System.out.printf("Difficulty: %s%n", difficulty);
-      stats[i] =
-          rangeStatOfCardDrawAgainstDifficulty(nbTry, nbCardDrawnMin, nbCardDrawnMax, difficulty);
-      System.out.println();
+
+    CardDrawStatistics stats =
+        new CardDrawStatistics(
+            Arrays.asList(difficulties),
+            IntStream.rangeClosed(nbCardDrawnMin, nbCardDrawnMax)
+                .boxed()
+                .collect(Collectors.toList()));
+
+    for (Combination difficulty : stats.getDifficulties()) {
+      for (int nbCards : stats.getCardNumbers()) {
+        float successRate = computeStatOfCardDraw(nbTry, nbCards, difficulty);
+        stats.addStat(difficulty, nbCards, successRate);
+      }
     }
     return stats;
   }
 
-  public float[] rangeStatOfCardDrawAgainstDifficulty(
-      int nbTry, int nbCardDrawnMin, int nbCardDrawnMax, Combination difficulty) {
-    if (nbCardDrawnMax < nbCardDrawnMin) {
-      throw new IllegalArgumentException("Wrong range definition of card drawn");
-    }
-    float[] stats = new float[nbCardDrawnMax - nbCardDrawnMin + 1];
-    for (int nbCardDrawn = nbCardDrawnMin; nbCardDrawn <= nbCardDrawnMax; nbCardDrawn++) {
-      // System.out.printf("Draw %s cards%n", nbCardDrawn);
-      float successRate = statOfCardDrawAgainstDifficulty(nbTry, nbCardDrawn, difficulty);
-      System.out.println(
-          String.format("%02d cards ==> success rate = %.1f %%", nbCardDrawn, successRate * 100));
-      stats[nbCardDrawn - nbCardDrawnMin] = successRate;
-    }
-    return stats;
-  }
-
-  public float statOfCardDrawAgainstDifficulty(int nbTry, int nbCardDrawn, Combination difficulty) {
+  private float computeStatOfCardDraw(int nbTry, int nbCardDrawn, Combination difficulty) {
     if (nbCardDrawn < 1) {
       throw new IllegalArgumentException("At least one card to draw");
     }
@@ -64,8 +71,6 @@ public class StatService {
       }
     }
 
-    float successRate = ((float) nbSuccess) / nbTry;
-    // System.out.println(String.format("===> success rate = %s %%", successRate * 100));
-    return successRate;
+    return ((float) nbSuccess) / nbTry;
   }
 }
