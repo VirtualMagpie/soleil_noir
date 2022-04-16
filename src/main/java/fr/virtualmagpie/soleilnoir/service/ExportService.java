@@ -57,7 +57,7 @@ public class ExportService {
         List<String> percentages = new ArrayList<>();
         percentages.add(String.valueOf(nbCards));
         for (Combination difficulty : statResult.getDifficulties()) {
-          percentages.add(String.format("%.2f %%", 100 * statResult.getStat(difficulty, nbCards)));
+          percentages.add(String.format("%.1f %%", 100 * statResult.getStat(difficulty, nbCards)));
         }
         writer.writeNext(percentages.toArray(String[]::new));
       }

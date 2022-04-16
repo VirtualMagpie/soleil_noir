@@ -12,7 +12,7 @@ public class PrinterService {
       System.out.println("Difficulty: " + difficulty.toString());
       for (int nbCards : statistics.getCardNumbers()) {
         float successRate = statistics.getStat(difficulty, nbCards);
-        System.out.printf("%d cards ==> %.2f %%%n", nbCards, successRate * 100);
+        System.out.printf("%d cards ==> %.1f %%%n", nbCards, successRate * 100);
       }
       System.out.println();
     }

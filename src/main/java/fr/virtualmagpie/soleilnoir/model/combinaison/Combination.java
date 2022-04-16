@@ -4,6 +4,9 @@ import fr.virtualmagpie.soleilnoir.model.card.CardValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Represent a card combination, ie a difficulty value to overpass, or the strength of a draw. For
  * instance, "one Ace" or "a pair of Ten" are combinations. In rpg "Soleil Noir", card combination
@@ -36,14 +39,17 @@ public class Combination implements Comparable<Combination> {
     return nbCard + cardValue.toString();
   }
 
+  private static Pattern FROM_STRING_PATTERN = Pattern.compile("^(\\d+)\\[(.)\\]$");
+
   public static Combination fromString(String value) {
-    String[] splited = value.split("-");
-    if (splited.length != 2) {
+    Matcher matcher = FROM_STRING_PATTERN.matcher(value);
+    if (matcher.find()) {
+      int nbCard = Integer.parseInt(matcher.group(1));
+      CardValue cardValue = CardValue.fromString(matcher.group(2));
+      return new Combination(nbCard, cardValue);
+    } else {
       throw new IllegalArgumentException(
-          "String representing a combination should have same format as 2-A");
+          "String representing a combination should have same format as 2[A]");
     }
-    int nbCard = Integer.parseInt(splited[0]);
-    CardValue cardValue = CardValue.fromString(splited[1]);
-    return new Combination(nbCard, cardValue);
   }
 }
