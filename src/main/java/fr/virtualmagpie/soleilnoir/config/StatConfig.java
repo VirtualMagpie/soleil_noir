@@ -1,8 +1,10 @@
 package fr.virtualmagpie.soleilnoir.config;
 
 import fr.virtualmagpie.soleilnoir.Main;
+import fr.virtualmagpie.soleilnoir.model.card.CardSymbol;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
 import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.AdvantageCombinationStrategy;
+import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.AdvantageLimitedCombinationStrategy;
 import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.CombinationStrategy;
 import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.DefaultCombinationStrategy;
 import lombok.Getter;
@@ -48,11 +50,15 @@ public class StatConfig {
       case "default":
         return new DefaultCombinationStrategy();
       case "advantage":
-        return new AdvantageCombinationStrategy();
+        return new AdvantageCombinationStrategy(CardSymbol.CLUB);
+      case "advantage-limited-joker-before":
+        return new AdvantageLimitedCombinationStrategy(CardSymbol.CLUB, true);
+      case "advantage-limited-joker-after":
+        return new AdvantageLimitedCombinationStrategy(CardSymbol.CLUB, false);
       default:
         throw new RuntimeException(
             String.format(
-                "Unknown property value for combination strategy: %s. Accepted values are: 'default', 'advantage'.",
+                "Unknown property value for combination strategy: %s. Accepted values are: 'default', 'advantage', 'advantage-limited-joker-before', 'advantage-limited-joker-after'.",
                 property));
     }
   }

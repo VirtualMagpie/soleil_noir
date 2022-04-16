@@ -2,6 +2,7 @@ package fr.virtualmagpie.soleilnoir.model.combinaison.strategy;
 
 import fr.virtualmagpie.soleilnoir.model.card.*;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 
@@ -10,9 +11,9 @@ import java.util.*;
  * on order implemented in Combination class (ie the higher value among the higher quantity). We
  * must also take into account Joker, which can become any card.
  *
- * <p>In this strategy, advantage rule is used (we arbitrarily use CLUB as the card symbol for this
- * advantage). Drawing with advantage means that every card with this symbol is considered to be
- * equal to card with the higher symbol. Otherwise, the default combination strategy is used.
+ * <p>In this strategy, advantage rule is used. Drawing with advantage means that every card with a
+ * specific symbol is considered to be equal to card with the higher value (among those with this
+ * same symbol). Otherwise, the default combination strategy is used.
  *
  * <p>In this strategy, we suppose Joker value is chosen after all cards are dealt. Furthermore,
  * advantaged cards change their values after Joker has changed its value (meaning we can optimize
@@ -37,7 +38,10 @@ import java.util.*;
  * this strategy is. For my personal use when I am Game Master, I consider a variation of this
  * strategy, which will be implemented in another class.
  */
+@RequiredArgsConstructor
 public class AdvantageCombinationStrategy implements CombinationStrategy {
+
+  private final CardSymbol cardSymbol;
 
   @Override
   public Combination findBestCombination(Card[] cards) {
@@ -58,7 +62,7 @@ public class AdvantageCombinationStrategy implements CombinationStrategy {
       } else if (card instanceof NormalCard) {
         NormalCard normalCard = (NormalCard) card;
         // Keep advantage cards for later
-        if (normalCard.getSymbol().equals(CardSymbol.CLUB)) {
+        if (normalCard.getSymbol().equals(cardSymbol)) {
           advantageCardValues.add(normalCard.getValue());
         }
         // Combination with other cards

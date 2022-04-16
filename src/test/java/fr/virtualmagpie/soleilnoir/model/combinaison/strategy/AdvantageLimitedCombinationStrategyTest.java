@@ -15,14 +15,23 @@ import static fr.virtualmagpie.soleilnoir.model.card.CardSymbol.*;
 import static fr.virtualmagpie.soleilnoir.model.card.CardValue.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AdvantageCombinationStrategyTest {
+class AdvantageLimitedCombinationStrategyTest {
 
   @ParameterizedTest(name = "{index} => {0}")
   @MethodSource("argumentProvider")
-  void expectedResult(String name, Card[] cards, Combination expected) {
-    AdvantageCombinationStrategy combinationStrategy =
-        new AdvantageCombinationStrategy(CardSymbol.CLUB);
-    assertEquals(expected, combinationStrategy.findBestCombination(cards));
+  void expectedResult(
+      String name,
+      Card[] cards,
+      Combination expectedForVariationBefore,
+      Combination expectedForVariationAfter) {
+    AdvantageLimitedCombinationStrategy combinationStrategyVariationBefore =
+        new AdvantageLimitedCombinationStrategy(CardSymbol.CLUB, true);
+    AdvantageLimitedCombinationStrategy combinationStrategyVariationAfter =
+        new AdvantageLimitedCombinationStrategy(CardSymbol.CLUB, false);
+    assertEquals(
+        expectedForVariationBefore, combinationStrategyVariationBefore.findBestCombination(cards));
+    assertEquals(
+        expectedForVariationAfter, combinationStrategyVariationAfter.findBestCombination(cards));
   }
 
   private static Stream<Arguments> argumentProvider() {
@@ -43,10 +52,12 @@ class AdvantageCombinationStrategyTest {
     Combination expected4 = new Combination(2, JACK);
 
     Card[] hand5 = {new NormalCard(TEN, SPADE), new NormalCard(JACK, CLUB), new JokerCard()};
-    Combination expected5 = new Combination(2, ACE);
+    Combination expectedBefore5 = new Combination(2, ACE);
+    Combination expectedAfter5 = new Combination(2, JACK);
 
     Card[] hand6 = {new NormalCard(KING, SPADE), new NormalCard(JACK, CLUB), new JokerCard()};
-    Combination expected6 = new Combination(3, KING);
+    Combination expectedBefore6 = new Combination(2, ACE);
+    Combination expectedAfter6 = new Combination(2, KING);
 
     Card[] hand7 = {
       new NormalCard(NINE, SPADE),
@@ -57,12 +68,21 @@ class AdvantageCombinationStrategyTest {
     Combination expected7 = new Combination(3, NINE);
 
     return Stream.of(
-        Arguments.of("Normal strategy - no joker", hand1, expected1),
-        Arguments.of("Normal strategy - a joker", hand2, expected2),
-        Arguments.of("Normal strategy - only jokers", hand3, expected3),
-        Arguments.of("Advantage strategy - no joker", hand4, expected4),
-        Arguments.of("Advantage strategy - a joker (becoming ACE)", hand5, expected5),
-        Arguments.of("Advantage strategy - a joker (becoming specific value)", hand6, expected6),
-        Arguments.of("Advantage strategy - a joker (not becoming advantage)", hand7, expected7));
+        Arguments.of("Normal strategy - no joker", hand1, expected1, expected1),
+        Arguments.of("Normal strategy - a joker", hand2, expected2, expected2),
+        Arguments.of("Normal strategy - only jokers", hand3, expected3, expected3),
+        Arguments.of("Advantage strategy - no joker", hand4, expected4, expected4),
+        Arguments.of(
+            "Advantage strategy - a joker (advantage card stronger than normal card)",
+            hand5,
+            expectedBefore5,
+            expectedAfter5),
+        Arguments.of(
+            "Advantage strategy - a joker (normal card stronger than advantage card)",
+            hand6,
+            expectedBefore6,
+            expectedAfter6),
+        Arguments.of(
+            "Advantage strategy - a joker (not becoming advantage)", hand7, expected7, expected7));
   }
 }
