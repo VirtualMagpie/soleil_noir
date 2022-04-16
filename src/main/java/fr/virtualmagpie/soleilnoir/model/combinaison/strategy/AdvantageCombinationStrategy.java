@@ -19,7 +19,7 @@ import java.util.*;
  * advantaged cards change their values after Joker has changed its value (meaning we can optimize
  * result when choosing a specific value for Joker).
  *
- * <p>For instance:
+ * <p>For instance (with advantage on CLUB):
  *
  * <ul>
  *   <li>With a hand of 1 King (not club), 1 Jack (club) and 1 Five (club), the best combination is

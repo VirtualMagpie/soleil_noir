@@ -35,7 +35,7 @@ import java.util.Map;
  *       convert Joker into ACE, but rather convert Joker into the max value of the combination.
  * </ul>
  *
- * <p>For instance:
+ * <p>For instance (with advantage on CLUB):
  *
  * <ul>
  *   <li>With a hand of 1 King (not club), 1 Jack (club) and 1 Five (club), the best combination is

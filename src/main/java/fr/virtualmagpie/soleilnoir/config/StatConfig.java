@@ -3,10 +3,7 @@ package fr.virtualmagpie.soleilnoir.config;
 import fr.virtualmagpie.soleilnoir.Main;
 import fr.virtualmagpie.soleilnoir.model.card.CardSymbol;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
-import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.AdvantageCombinationStrategy;
-import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.AdvantageLimitedCombinationStrategy;
-import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.CombinationStrategy;
-import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.DefaultCombinationStrategy;
+import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.*;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -55,10 +52,12 @@ public class StatConfig {
         return new AdvantageLimitedCombinationStrategy(CardSymbol.CLUB, true);
       case "advantage-limited-joker-after":
         return new AdvantageLimitedCombinationStrategy(CardSymbol.CLUB, false);
+      case "disadvantage":
+        return new DisadvantageCombinationStrategy(CardSymbol.CLUB);
       default:
         throw new RuntimeException(
             String.format(
-                "Unknown property value for combination strategy: %s. Accepted values are: 'default', 'advantage', 'advantage-limited-joker-before', 'advantage-limited-joker-after'.",
+                "Unknown property value for combination strategy: %s. Accepted values are: 'default', 'advantage', 'advantage-limited-joker-before', 'advantage-limited-joker-after', 'disadvantage'.",
                 property));
     }
   }
