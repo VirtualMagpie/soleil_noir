@@ -33,6 +33,13 @@
             <version>1.7.36</version>
         </dependency>
 
+        <!-- Csv export -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.1</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -21,6 +21,7 @@ public class StatConfig {
   private final int nbCardMin;
   private final int nbCardMax;
   private final List<Combination> difficulties;
+  private final String combinationStrategyName;
   private final CombinationStrategy combinationStrategy;
 
   public StatConfig() {
@@ -38,8 +39,8 @@ public class StatConfig {
         Arrays.stream(properties.getProperty("difficulties").split(","))
             .map(Combination::fromString)
             .collect(Collectors.toList());
-    combinationStrategy =
-        combinationStrategyFromProperty(properties.getProperty("combination-strategy"));
+    combinationStrategyName = properties.getProperty("combination-strategy");
+    combinationStrategy = combinationStrategyFromProperty(combinationStrategyName);
   }
 
   private static CombinationStrategy combinationStrategyFromProperty(String property) {

@@ -2,6 +2,7 @@ package fr.virtualmagpie.soleilnoir;
 
 import fr.virtualmagpie.soleilnoir.config.StatConfig;
 import fr.virtualmagpie.soleilnoir.model.stat.CardDrawStatistics;
+import fr.virtualmagpie.soleilnoir.service.ExportService;
 import fr.virtualmagpie.soleilnoir.service.PrinterService;
 import fr.virtualmagpie.soleilnoir.service.StatService;
 
@@ -18,8 +19,10 @@ public class Main {
     StatConfig statConfig = new StatConfig();
     StatService statService = new StatService(random);
     PrinterService printerService = new PrinterService();
+    ExportService exportService = new ExportService();
 
     CardDrawStatistics statistics = statService.statsCardDraw(statConfig);
     printerService.printCardDrawStat(statistics);
+    exportService.exportStatistics(statConfig, statistics);
   }
 }
