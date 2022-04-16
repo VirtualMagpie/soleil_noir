@@ -2,6 +2,9 @@ package fr.virtualmagpie.soleilnoir.config;
 
 import fr.virtualmagpie.soleilnoir.Main;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
+import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.AdvantageCombinationStrategy;
+import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.CombinationStrategy;
+import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.DefaultCombinationStrategy;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -19,6 +22,7 @@ public class StatConfig {
   private final int nbCardMin;
   private final int nbCardMax;
   private final List<Combination> difficulties;
+  private final CombinationStrategy combinationStrategy;
 
   public StatConfig() {
     Properties properties = new Properties();
@@ -35,5 +39,21 @@ public class StatConfig {
         Arrays.stream(properties.getProperty("difficulties").split(","))
             .map(Combination::fromString)
             .collect(Collectors.toList());
+    combinationStrategy =
+        combinationStrategyFromProperty(properties.getProperty("combination-strategy"));
+  }
+
+  private static CombinationStrategy combinationStrategyFromProperty(String property) {
+    switch (property) {
+      case "default":
+        return new DefaultCombinationStrategy();
+      case "advantage":
+        return new AdvantageCombinationStrategy();
+      default:
+        throw new RuntimeException(
+            String.format(
+                "Unknown property value for combination strategy: %s. Accepted values are: 'default', 'advantage'.",
+                property));
+    }
   }
 }

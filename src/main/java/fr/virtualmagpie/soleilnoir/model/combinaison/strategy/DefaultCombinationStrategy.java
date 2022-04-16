@@ -1,9 +1,10 @@
-package fr.virtualmagpie.soleilnoir.model.combinaison;
+package fr.virtualmagpie.soleilnoir.model.combinaison.strategy;
 
 import fr.virtualmagpie.soleilnoir.model.card.Card;
 import fr.virtualmagpie.soleilnoir.model.card.CardValue;
 import fr.virtualmagpie.soleilnoir.model.card.JokerCard;
 import fr.virtualmagpie.soleilnoir.model.card.NormalCard;
+import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,13 +18,16 @@ import java.util.Map;
  * <p>No further rule is applied in this basic strategy.
  *
  * <p>For instance:
- * <li>With a hand of 1 Ace and 2 Five, the best combination is 2[5]
- * <li>With a hand of 1 Two, 1 Queen and 1 Joker, the best combination is 2[Q]
- * <li>With a hand of 2 Jokers, the best combination is 2[A]
+ *
+ * <ul>
+ *   <li>With a hand of 1 Ace and 2 Five, the best combination is 2[5]
+ *   <li>With a hand of 1 Two, 1 Queen and 1 Joker, the best combination is 2[Q]
+ *   <li>With a hand of 2 Jokers, the best combination is 2[A]
+ * </ul>
  */
-public class CombinationStrategy {
+public class DefaultCombinationStrategy implements CombinationStrategy {
 
-  public static Combination findBestCombination(Card[] cards) {
+  public Combination findBestCombination(Card[] cards) {
     if (cards.length == 0) {
       throw new IllegalArgumentException("No combination possible in empty hand");
     }
@@ -53,7 +57,7 @@ public class CombinationStrategy {
       possibleCombination.put(CardValue.ACE, combination);
     }
 
-    // Take joker into account in possible combination
+    // Take jokers into account in possible combination
     if (nbJoker > 0) {
       for (Combination combination : possibleCombination.values()) {
         combination.setNbCard(combination.getNbCard() + nbJoker);

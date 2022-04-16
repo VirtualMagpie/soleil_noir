@@ -1,6 +1,7 @@
-package fr.virtualmagpie.soleilnoir.model.combinaison;
+package fr.virtualmagpie.soleilnoir.model.combinaison.strategy;
 
 import fr.virtualmagpie.soleilnoir.model.card.*;
+import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,12 +10,13 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CombinationStrategyTest {
+class DefaultCombinationStrategyTest {
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "{index} => {0}")
   @MethodSource("argumentProvider")
-  void expectedResult(Card[] cards, Combination expected) {
-    assertEquals(expected, CombinationStrategy.findBestCombination(cards));
+  void expectedResult(String name, Card[] cards, Combination expected) {
+    DefaultCombinationStrategy combinationStrategy = new DefaultCombinationStrategy();
+    assertEquals(expected, combinationStrategy.findBestCombination(cards));
   }
 
   private static Stream<Arguments> argumentProvider() {
@@ -36,8 +38,8 @@ class CombinationStrategyTest {
     Combination expected3 = new Combination(2, CardValue.ACE);
 
     return Stream.of(
-        Arguments.of(hand1, expected1),
-        Arguments.of(hand2, expected2),
-        Arguments.of(hand3, expected3));
+        Arguments.of("Normal strategy - no joker", hand1, expected1),
+        Arguments.of("Normal strategy - a joker", hand2, expected2),
+        Arguments.of("Normal strategy - only jokers", hand3, expected3));
   }
 }

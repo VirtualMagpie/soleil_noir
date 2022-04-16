@@ -4,7 +4,7 @@ import fr.virtualmagpie.soleilnoir.config.StatConfig;
 import fr.virtualmagpie.soleilnoir.model.Deck;
 import fr.virtualmagpie.soleilnoir.model.card.Card;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
-import fr.virtualmagpie.soleilnoir.model.combinaison.CombinationStrategy;
+import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.CombinationStrategy;
 import fr.virtualmagpie.soleilnoir.model.stat.CardDrawStatistics;
 
 import java.util.List;
@@ -33,10 +33,15 @@ public class StatService {
    *     range of possible values. Must be more than or equal to min value in range.
    * @param difficulties - Array of combinations, defining difficulties against which success rate
    *     will be computed.
+   * @param combinationStrategy - combination strategy used to define hand best combination
    * @return object containing success rate stat for each possibility
    */
   public CardDrawStatistics statsCardDraw(
-      int nbTry, int nbCardDrawnMin, int nbCardDrawnMax, List<Combination> difficulties) {
+      int nbTry,
+      int nbCardDrawnMin,
+      int nbCardDrawnMax,
+      List<Combination> difficulties,
+      CombinationStrategy combinationStrategy) {
     if (nbCardDrawnMax < nbCardDrawnMin) {
       throw new IllegalArgumentException("Wrong range definition of card drawn");
     }
@@ -50,7 +55,7 @@ public class StatService {
 
     for (Combination difficulty : stats.getDifficulties()) {
       for (int nbCards : stats.getCardNumbers()) {
-        float successRate = computeStatOfCardDraw(nbTry, nbCards, difficulty);
+        float successRate = computeStatOfCardDraw(nbTry, nbCards, difficulty, combinationStrategy);
         stats.addStat(difficulty, nbCards, successRate);
       }
     }
@@ -62,10 +67,12 @@ public class StatService {
         statConfig.getNbTry(),
         statConfig.getNbCardMin(),
         statConfig.getNbCardMax(),
-        statConfig.getDifficulties());
+        statConfig.getDifficulties(),
+        statConfig.getCombinationStrategy());
   }
 
-  private float computeStatOfCardDraw(int nbTry, int nbCardDrawn, Combination difficulty) {
+  private float computeStatOfCardDraw(
+      int nbTry, int nbCardDrawn, Combination difficulty, CombinationStrategy combinationStrategy) {
     if (nbCardDrawn < 1) {
       throw new IllegalArgumentException("At least one card to draw");
     }
@@ -74,7 +81,7 @@ public class StatService {
     for (int i = 0; i < nbTry; i++) {
       deck.shuffle(random);
       Card[] drawn = deck.seeNext(nbCardDrawn);
-      Combination combination = CombinationStrategy.findBestCombination(drawn);
+      Combination combination = combinationStrategy.findBestCombination(drawn);
       if (combination.compareTo(difficulty) >= 0) {
         nbSuccess++;
       }
