@@ -6,12 +6,14 @@ import fr.virtualmagpie.soleilnoir.model.card.Card;
 import fr.virtualmagpie.soleilnoir.model.combinaison.Combination;
 import fr.virtualmagpie.soleilnoir.model.combinaison.strategy.CombinationStrategy;
 import fr.virtualmagpie.soleilnoir.model.stat.CardDrawStatistics;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Slf4j
 public class StatService {
   private final Deck deck;
   private final Random random;
@@ -53,12 +55,21 @@ public class StatService {
                 .boxed()
                 .collect(Collectors.toList()));
 
+    log.info("Starting statistics...");
+    long start = System.nanoTime();
+    int cpt = 0;
+    int total = stats.getDifficulties().size() * stats.getCardNumbers().size();
+    log.info(cpt + "/" + total);
     for (Combination difficulty : stats.getDifficulties()) {
       for (int nbCards : stats.getCardNumbers()) {
         float successRate = computeStatOfCardDraw(nbTry, nbCards, difficulty, combinationStrategy);
         stats.addStat(difficulty, nbCards, successRate);
+        cpt++;
+        log.info(cpt + "/" + total);
       }
     }
+    long end = System.nanoTime();
+    log.info(String.format("Statistics done (%.2fs).", (end - start) / 1_000_000_000.));
     return stats;
   }
 
