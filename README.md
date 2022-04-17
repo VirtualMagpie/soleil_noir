@@ -147,3 +147,12 @@ are values of those parameters provided when the program was run.
 
 The result file is a csv table defining success rate (in percentage) for each number of drawn cards against each
 difficulty.
+
+I run this program for each strategy and with a sample size of 10 000 000 draws. Those results are provided in export
+folder. Given this sample size, they are supposed to have a margin of error of 0.04% (with a confidence level of 99%).
+Since results are provided with a precision of 0.1%, we can suppose all digits of those results to be significant (
+-+0.1% because of rounded result). (For instance, probability of success against 1[J] with a single card is
+theoretically 33.333...%. With such sample size for statistics, we should have at least 99% chance to find in export
+result a success rate of 33.3% or 33.4%).
+
+(See https://en.wikipedia.org/wiki/Margin_of_error for calculation of margin of error)
