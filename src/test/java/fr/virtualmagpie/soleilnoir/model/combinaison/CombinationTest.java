@@ -96,10 +96,10 @@ class CombinationTest {
 
   @Test
   void stringParsing() {
-    Combination combination1 = Combination.fromString("1-J");
-    Combination combination2 = Combination.fromString("2-4");
-    Combination combination3 = Combination.fromString("3-0");
-    Combination combination4 = Combination.fromString("4-A");
+    Combination combination1 = Combination.fromString("1[J]");
+    Combination combination2 = Combination.fromString("2[4]");
+    Combination combination3 = Combination.fromString("3[0]");
+    Combination combination4 = Combination.fromString("4[A]");
     assertEquals(new Combination(1, CardValue.JACK), combination1);
     assertEquals(new Combination(2, CardValue.FOUR), combination2);
     assertEquals(new Combination(3, CardValue.TEN), combination3);

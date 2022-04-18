@@ -23,6 +23,7 @@ public class StatConfig {
   private final List<Combination> difficulties;
   private final String combinationStrategyName;
   private final CombinationStrategy combinationStrategy;
+  private final int nbDecimalDigit;
 
   public StatConfig() {
     Properties properties = new Properties();
@@ -41,6 +42,7 @@ public class StatConfig {
             .collect(Collectors.toList());
     combinationStrategyName = properties.getProperty("combination-strategy");
     combinationStrategy = combinationStrategyFromProperty(combinationStrategyName);
+    nbDecimalDigit = Integer.parseInt(properties.getProperty("nb-decimal-digit"));
   }
 
   private static CombinationStrategy combinationStrategyFromProperty(String property) {

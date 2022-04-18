@@ -139,6 +139,11 @@ Configuration are:
 - combination-strategy: (string) Define which combination strategy is applied during those statistics. See section
   "Strategy" for list of strategy names and signification.
 
+- nb-decimal-digit: (integer) Define how many decimal digits (after comma) are printed in export result. For instance:
+  100% for 0 digit, 100,0% for 1 digit, 100,00% for 2 digits, etc... Caution: this parameter is only used to define how
+  results are printed, and does not indicate anything about result precision (result precision depends on parameter
+  nb-try).
+
 ##### Export result
 
 When program is completed, a result csv file will be generated in directory "export".
@@ -150,10 +155,10 @@ The result file is a csv table defining success rate (in percentage) for each nu
 difficulty.
 
 I run this program for each strategy and with a sample size of 10 000 000 draws. Those results are provided in export
-folder. Given this sample size, they are supposed to have a margin of error of 0.04% (with a confidence level of 99%).
-Since results are provided with a precision of 0.1%, we can suppose all digits of those results to be significant
-(-+0.1% because of rounded result). (For instance, probability of success against 1[J] with a single card is
-theoretically 33.333...%. With such sample size for statistics, we should have at least 99% chance to find in export
-result a success rate of 33.3% or 33.4%).
+folder. With such sample size, we can expect a margin of error of 0.04% (with a confidence level of 99%) / a margin of
+error of 0.1% (with a confidence level of 99.999999%). Since results are provided with a precision of 1%, we can suppose
+all digits from those results to be significant. (For instance, we should theoretically find a success rate of
+33.333...% when drawing 1 card against 1[J] difficulty. With a sample size of 10 000 000 draws, we should almost always
+find a result of "33%". With a smaller sample size like 1 000 draws, we often find a result of "32%" or "34%").
 
 (See https://en.wikipedia.org/wiki/Margin_of_error for calculation of margin of error)

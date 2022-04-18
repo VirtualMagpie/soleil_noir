@@ -22,7 +22,7 @@ public class Main {
     ExportService exportService = new ExportService();
 
     CardDrawStatistics statistics = statService.statsCardDraw(statConfig);
-    printerService.printCardDrawStat(statistics);
+    printerService.printCardDrawStat(statConfig, statistics);
     exportService.exportStatistics(statConfig, statistics);
   }
 }

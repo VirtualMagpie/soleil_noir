@@ -23,7 +23,7 @@ public class ExportService {
       Path path = Path.of("export", computeFileName(statConfig));
       Files.deleteIfExists(path);
       // Files.createFile(path);
-      writeFile(path, statResult);
+      writeFile(path, statResult, statConfig);
     } catch (IOException e) {
       log.error("Could not export result", e);
     }
@@ -35,7 +35,8 @@ public class ExportService {
         statConfig.getCombinationStrategyName(), statConfig.getNbTry());
   }
 
-  private void writeFile(Path path, CardDrawStatistics statResult) throws IOException {
+  private void writeFile(Path path, CardDrawStatistics statResult, StatConfig statConfig)
+      throws IOException {
     try (CSVWriter writer =
         new CSVWriter(
             new FileWriter(path.toString()),
@@ -57,10 +58,16 @@ public class ExportService {
         List<String> percentages = new ArrayList<>();
         percentages.add(String.valueOf(nbCards));
         for (Combination difficulty : statResult.getDifficulties()) {
-          percentages.add(String.format("%.1f %%", 100 * statResult.getStat(difficulty, nbCards)));
+          percentages.add(formatResult(statResult.getStat(difficulty, nbCards), statConfig));
         }
         writer.writeNext(percentages.toArray(String[]::new));
       }
     }
+  }
+
+  private String formatResult(float statResult, StatConfig statConfig) {
+    float percentageValue = 100 * statResult;
+    String formatString = "%." + statConfig.getNbDecimalDigit() + "f%%";
+    return String.format(formatString, percentageValue);
   }
 }
